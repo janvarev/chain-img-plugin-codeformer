@@ -2,6 +2,8 @@
 Codeformer plugin for chain-img-processor framework (plug-and-play)
 https://github.com/janvarev/chain-img-processor
 
+**NOTE:** there are some problems in multithread mode, use 1 thread for now if you use ChainVideo.
+
 ## Example 
 
 ![origin](/demo_photo.jpg "origin photo")
