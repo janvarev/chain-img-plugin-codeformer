@@ -1,5 +1,6 @@
 # chain-img-plugin-codeformer
-Codeformer plugin for chain-img-processor
+Codeformer plugin for chain-img-processor framework (plug-and-play)
+https://github.com/janvarev/chain-img-processor
 
 ## Example 
 
