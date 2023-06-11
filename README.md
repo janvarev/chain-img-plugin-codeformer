@@ -2,7 +2,8 @@
 Codeformer plugin for chain-img-processor framework (plug-and-play)
 https://github.com/janvarev/chain-img-processor
 
-**NOTE:** multithread mode is not so effective while using ChainVideo for now. You can try use 1 thread instead.
+**NOTE:** in 2.0 multithreaded/multiimage mode is significantly faster because of reuse NN models in memory. 
+But still better is to use 1 thread - it's effective too.
 
 ## Example 
 
