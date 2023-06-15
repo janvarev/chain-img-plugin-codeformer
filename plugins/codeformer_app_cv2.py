@@ -35,29 +35,26 @@ THREAD_LOCK_CODEFORMER_NET_CREATE = threading.Lock()
 THREAD_LOCK_BGUPSAMPLER = threading.Lock()
 
 pretrain_model_url = {
-    "codeformer": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth",
-    "detection": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_Resnet50_Final.pth",
-    "parsing": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth",
-    "realesrgan": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/RealESRGAN_x2plus.pth",
+    "codeformer": {
+        "url": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth",
+        "file_path": "models/codeformer.pth"
+    },
+    "realesrgan": {
+        "url": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/RealESRGAN_x2plus.pth",
+        "file_path": "models/RealESRGAN_x2plus.pth"
+    },
+    # "detection": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_Resnet50_Final.pth",
+    # "parsing": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth",
+    # "detection" & "parsing" are internally downloaded to 'xxx/python3.x/site-packages/codeformer/weights/facelib/' (cannot change), see:
+    # https://github.com/sczhou/CodeFormer/blob/master/facelib/detection/__init__.py
+    # https://github.com/sczhou/CodeFormer/blob/master/facelib/parsing/__init__.py
 }
 
 # download weights
-if not os.path.exists("CodeFormer/weights/CodeFormer/codeformer.pth"):
-    load_file_from_url(
-        url=pretrain_model_url["codeformer"], model_dir="CodeFormer/weights/CodeFormer", progress=True, file_name=None
-    )
-if not os.path.exists("CodeFormer/weights/facelib/detection_Resnet50_Final.pth"):
-    load_file_from_url(
-        url=pretrain_model_url["detection"], model_dir="CodeFormer/weights/facelib", progress=True, file_name=None
-    )
-if not os.path.exists("CodeFormer/weights/facelib/parsing_parsenet.pth"):
-    load_file_from_url(
-        url=pretrain_model_url["parsing"], model_dir="CodeFormer/weights/facelib", progress=True, file_name=None
-    )
-if not os.path.exists("CodeFormer/weights/realesrgan/RealESRGAN_x2plus.pth"):
-    load_file_from_url(
-        url=pretrain_model_url["realesrgan"], model_dir="CodeFormer/weights/realesrgan", progress=True, file_name=None
-    )
+for k, v in pretrain_model_url.items():
+    if not os.path.exists(v["file_path"]):
+        print("Download CodeFormer model:", k)
+        load_file_from_url(url=v["url"], model_dir=os.path.dirname(v["file_path"]), progress=True, file_name=None)
 
 
 def imread(img_path):
@@ -79,7 +76,7 @@ def set_realesrgan():
     )
     upsampler = RealESRGANer(
         scale=2,
-        model_path="CodeFormer/weights/realesrgan/RealESRGAN_x2plus.pth",
+        model_path=pretrain_model_url["realesrgan"]["file_path"],
         model=model,
         tile=400,
         tile_pad=40,
@@ -108,7 +105,7 @@ def get_codeformer():
             n_layers=9,
             connect_list=["32", "64", "128", "256"],
         ).to(device)
-        ckpt_path = "CodeFormer/weights/CodeFormer/codeformer.pth"
+        ckpt_path = pretrain_model_url["codeformer"]["file_path"]
         checkpoint = torch.load(ckpt_path)["params_ema"]
         codeformer_net.load_state_dict(checkpoint)
         codeformer_net.eval()
